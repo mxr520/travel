@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>贴心旅行 · 小程序</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Noto+Serif+SC:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fdfaf3;--bg-2:#fff;--ink:#26221b;--ink-soft:#5c554a;--muted:#9a9184;
+    --line:#e8e0d0;--line-2:#dcd1bd;
+    --sea:#1d6a6a;--sea-soft:#dcefef;--coral:#d9663f;--coral-soft:#fbe7dd;
+    --sun:#d99e2b;--sun-soft:#faf0d7;--plum:#7c5a86;--plum-soft:#f0e8f2;
+    --sand:#f5eee0;
+    --shadow:0 1px 2px rgba(38,34,27,.05),0 8px 24px rgba(38,34,27,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:#2b2620;font-family:"Space Grotesk","Noto Serif SC",sans-serif;color:var(--ink);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 12px;
+    background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px);background-size:22px 22px}
+
+  /* phone shell */
+  .phone{width:100%;max-width:414px;height:min(86vh,860px);background:var(--bg);border-radius:44px;
+    box-shadow:0 0 0 12px #0d0b09,0 0 0 14px #3a352d,0 30px 70px rgba(0,0,0,.5);
+    overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:28px;background:#0d0b09;
+    border-radius:0 0 18px 18px;z-index:50}
+  .statusbar{height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px;font-size:.78rem;font-weight:600;color:var(--ink);z-index:40}
+  .statusbar .dots{display:flex;gap:5px;align-items:center;font-size:.7rem}
+
+  .screen{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch}
+  .screen::-webkit-scrollbar{width:0}
+  .page{display:none;padding:8px 18px 96px;animation:rise .38s cubic-bezier(.2,.8,.2,1) both}
+  .page.active{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* page header */
+  .ph{padding:6px 0 16px}
+  .ph .kick{font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;color:var(--coral);font-weight:600}
+  .ph h1{font-family:"Fraunces","Noto Serif SC",serif;font-weight:900;font-size:2rem;line-height:1.02;letter-spacing:-.02em;margin-top:3px}
+  .ph h1 em{font-style:italic;color:var(--sea)}
+  .ph .sub{font-size:.82rem;color:var(--ink-soft);margin-top:6px;font-family:"Noto Serif SC",serif;font-style:italic;line-height:1.5}
+
+  /* library cards */
+  .lib-list{display:flex;flex-direction:column;gap:14px}
+  .g-card{background:var(--bg-2);border:1.5px solid var(--line);border-radius:18px;padding:16px 17px;box-shadow:var(--shadow);cursor:pointer;transition:transform .14s,border-color .14s}
+  .g-card:active{transform:scale(.985)}
+  .g-card .row1{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .g-card h3{font-family:"Noto Serif SC",serif;font-weight:700;font-size:1.14rem;line-height:1.2}
+  .g-card .src{font-size:.62rem;font-weight:600;padding:2px 8px;border-radius:20px;flex-shrink:0}
+  .src-gen{background:var(--sea-soft);color:var(--sea)} .src-imp{background:var(--plum-soft);color:var(--plum)}
+  .g-card .meta{font-size:.76rem;color:var(--muted);margin-top:6px;display:flex;gap:10px;flex-wrap:wrap}
+  .g-card .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .g-card .chip{font-size:.68rem;background:var(--sand);color:var(--ink-soft);padding:3px 10px;border-radius:20px}
+  .g-card .go{margin-top:12px;font-size:.78rem;color:var(--sea);font-weight:600}
+
+  .empty{text-align:center;padding:56px 20px;color:var(--muted)}
+  .empty .ei{font-size:2.6rem}
+  .empty p{font-size:.88rem;margin-top:10px;font-family:"Noto Serif SC",serif;font-style:italic;line-height:1.6}
+
+  /* forms */
+  .card{background:var(--bg-2);border:1.5px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+  .card h2{font-family:"Fraunces",serif;font-weight:600;font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .card h2 .n{width:24px;height:24px;background:var(--sea);color:#fff;border-radius:50%;display:grid;place-items:center;font-size:.74rem}
+  label{display:block;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px}
+  .fld{margin-bottom:15px}
+  input,select,textarea{width:100%;font-family:inherit;font-size:.95rem;padding:11px 12px;background:var(--bg);border:1.5px solid var(--line);border-radius:11px;color:var(--ink);outline:none;transition:border-color .16s,box-shadow .16s}
+  textarea{resize:vertical;min-height:140px;line-height:1.6;font-family:"Noto Serif SC",serif}
+  input:focus,select:focus,textarea:focus{border-color:var(--sea);box-shadow:0 0 0 3px var(--sea-soft)}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .segmented{display:flex;gap:7px;flex-wrap:wrap}
+  .seg{flex:1;min-width:60px;text-align:center;font-family:inherit;font-size:.8rem;padding:9px 4px;border:1.5px solid var(--line);border-radius:11px;background:var(--bg);cursor:pointer;transition:all .14s;font-weight:500}
+  .seg.on{background:var(--ink);color:var(--bg-2);border-color:var(--ink)}
+  .seg .emo{display:block;font-size:1.15rem;margin-bottom:2px}
+
+  .stash{margin-top:6px;border-top:1.5px dashed var(--line);padding-top:15px}
+  .stash h3{font-family:"Fraunces",serif;font-weight:600;font-size:1rem;display:flex;align-items:center;gap:7px}
+  .stash .tag{font-size:.62rem;background:var(--coral-soft);color:var(--coral);padding:3px 9px;border-radius:20px;font-weight:600;margin-left:6px}
+  .stash p.tip{font-size:.74rem;color:var(--muted);margin:6px 0 12px;font-family:"Noto Serif SC",serif;font-style:italic;line-height:1.5}
+  .stash-row{display:grid;grid-template-columns:1.3fr .9fr auto;gap:8px}
+  .stash-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  .stash-item{display:inline-flex;align-items:center;gap:7px;background:var(--coral-soft);color:var(--coral);border-radius:20px;padding:4px 7px 4px 12px;font-size:.78rem;font-weight:500}
+  .stash-item .rm{border:none;background:rgba(217,102,63,.18);color:var(--coral);width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:.72rem;line-height:1}
+
+  .seg-method{display:flex;gap:8px;margin-bottom:16px}
+  .seg-method button{flex:1;padding:11px;border:1.5px solid var(--line-2);background:var(--bg-2);border-radius:12px;font-family:inherit;font-weight:600;font-size:.86rem;cursor:pointer;transition:all .14s}
+  .seg-method button.on{background:var(--sea);color:#fff;border-color:var(--sea)}
+
+  .btn{font-family:inherit;font-weight:600;cursor:pointer;border-radius:12px;border:1.5px solid transparent;transition:all .14s;font-size:.92rem}
+  .btn-primary{background:var(--coral);color:#fff;padding:14px;width:100%;box-shadow:var(--shadow);font-size:1rem}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:var(--bg-2);border-color:var(--line-2);color:var(--ink-soft);padding:10px 14px}
+  .btn-ghost:active{background:var(--bg)}
+  .btn-sm{padding:8px 12px;font-size:.82rem}
+  .btn-block{width:100%}
+
+  /* tabbar */
+  .tabbar{position:absolute;bottom:0;left:0;right:0;height:74px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+    border-top:1.5px solid var(--line);display:flex;z-index:45;padding-bottom:6px}
+  .tabbar button{flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);font-family:inherit;font-size:.66rem;font-weight:600;transition:color .14s}
+  .tabbar button .ti{font-size:1.35rem;line-height:1}
+  .tabbar button.on{color:var(--sea)}
+
+  /* detail / editor sheet */
+  .sheet{position:absolute;inset:0;background:var(--bg);z-index:60;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+  .sheet.open{transform:translateX(0);visibility:visible}
+  .sheet-bar{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1.5px solid var(--line);background:var(--bg-2)}
+  .sheet-bar .back{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--ink);padding:0 2px}
+  .sheet-bar .st{flex:1;min-width:0}
+  .sheet-bar .st .stt{font-family:"Noto Serif SC",serif;font-weight:700;font-size:1.02rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sheet-bar .st .sts{font-size:.68rem;color:var(--muted)}
+  .sheet-bar .act{background:var(--sea);color:#fff;border:none;border-radius:20px;padding:7px 13px;font-family:inherit;font-weight:600;font-size:.8rem;cursor:pointer}
+  .sheet-body{flex:1;overflow-y:auto;padding:16px 16px 40px}
+  .sheet-body::-webkit-scrollbar{width:0}
+
+  .persona{background:var(--sea-soft);border-radius:13px;padding:13px 15px;margin-bottom:18px;font-family:"Noto Serif SC",serif;font-size:.86rem;line-height:1.65;border-left:4px solid var(--sea)}
+  .persona b{color:var(--sea)}
+
+  .tabs{display:flex;gap:6px;margin-bottom:18px}
+  .tab{flex:1;font-family:inherit;font-weight:600;font-size:.82rem;padding:9px 4px;border:1.5px solid var(--line-2);background:var(--bg-2);border-radius:24px;cursor:pointer;transition:all .14s}
+  .tab.on{background:var(--sea);color:#fff;border-color:var(--sea)}
+  .pane{display:none} .pane.on{display:block;animation:rise .3s both}
+
+  /* title edit field in editor */
+  .title-edit{margin-bottom:16px}
+
+  /* itinerary */
+  .day{margin-bottom:26px}
+  .day-h{display:flex;align-items:baseline;gap:11px;margin-bottom:8px}
+  .day-h .badge{font-family:"Fraunces",serif;font-weight:900;font-size:1.8rem;color:var(--sea);line-height:1}
+  .day-h .area{font-family:"Noto Serif SC",serif;font-weight:700;font-size:1.05rem}
+  .day-h .dmeta{font-size:.72rem;color:var(--muted)}
+  .day-load{margin-left:auto;font-size:.66rem;font-weight:600;padding:3px 10px;border-radius:20px;flex-shrink:0}
+  .load-easy{background:var(--sea-soft);color:var(--sea)} .load-mid{background:var(--sun-soft);color:var(--sun)} .load-hard{background:var(--coral-soft);color:var(--coral)}
+  .timeline{border-left:2px solid var(--line-2);margin-left:11px}
+  .stop{position:relative;padding:0 0 18px 24px}
+  .stop::before{content:"";position:absolute;left:-7px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--bg-2);border:2.5px solid var(--sea)}
+  .stop.mine::before{border-color:var(--coral);background:var(--coral)}
+  .stop .time{font-weight:600;font-size:.78rem;color:var(--sea)}
+  .stop .sname{font-family:"Noto Serif SC",serif;font-weight:700;font-size:1rem;margin-top:1px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .stop .mine-tag{font-size:.6rem;background:var(--coral);color:#fff;padding:2px 7px;border-radius:20px;font-weight:600}
+  .stop .sdesc{font-size:.82rem;color:var(--ink-soft);margin-top:2px;line-height:1.5}
+  .stop .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+  .stop .tags span{font-size:.66rem;padding:2px 8px;border-radius:20px;background:var(--sand);color:var(--ink-soft)}
+  .stop .tags .t-eat{background:var(--sun-soft);color:var(--sun)} .stop .tags .t-photo{background:var(--plum-soft);color:var(--plum)}
+
+  /* edit rows */
+  .stop-edit{background:var(--bg-2);border:1.5px solid var(--line);border-radius:12px;padding:11px;margin:0 0 10px 24px;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .stop-edit input,.stop-edit select{padding:8px 9px;font-size:.82rem}
+  .stop-edit .full{grid-column:1/-1}
+  .stop-edit .ops{grid-column:1/-1;display:flex;justify-content:flex-end;align-items:center;gap:6px}
+  .stop-mine-flag{font-size:.6rem;background:var(--coral);color:#fff;padding:2px 8px;border-radius:20px;margin-right:auto}
+  .mini{border:1.5px solid var(--line-2);background:var(--bg);border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:.82rem;color:var(--ink-soft)}
+  .mini:active{border-color:var(--coral);color:var(--coral)}
+  .add-line{margin:0 0 20px 24px}
+  .area-edit{margin-bottom:8px}
+
+  /* packing */
+  .pack-cat{background:var(--bg-2);border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:13px}
+  .pack-cat h4{font-family:"Fraunces",serif;font-weight:600;font-size:.98rem;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+  .pack-cat ul{list-style:none}
+  .pack-cat li{display:flex;align-items:center;gap:9px;padding:6px 0;font-size:.87rem;border-bottom:1px dashed var(--line)}
+  .pack-cat li:last-child{border-bottom:none}
+  .pack-cat li input[type=checkbox]{width:auto;flex-shrink:0}
+  .pack-cat li.reason{font-size:.74rem;color:var(--muted);font-style:italic;font-family:"Noto Serif SC",serif;padding-left:26px}
+  .pack-cat li .del-x{margin-left:auto;border:none;background:none;color:var(--muted);cursor:pointer;font-size:.85rem}
+  .pack-add{display:flex;gap:7px;margin-top:10px}
+  .pack-add input{flex:1;padding:8px 10px;font-size:.82rem}
+
+  /* budget */
+  .budget-table{width:100%;border-collapse:collapse;background:var(--bg-2);border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+  .budget-table th,.budget-table td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:.85rem;vertical-align:middle}
+  .budget-table th{background:var(--sand);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+  .budget-table td.amt{text-align:right;font-weight:600}
+  .budget-table tr:last-child td{border-bottom:none}
+  .budget-table .bar{height:7px;border-radius:6px;background:var(--sea);margin-top:5px}
+  .budget-table input{padding:7px 8px;font-size:.82rem;border-radius:8px}
+  .budget-total{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:var(--bg-2);border-radius:14px;padding:16px 18px;margin-top:14px}
+  .budget-total .lab{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+  .budget-total .num{font-family:"Fraunces",serif;font-weight:900;font-size:1.8rem}
+  .budget-total .num small{font-size:.85rem;opacity:.7}
+  .budget-note{font-size:.74rem;color:var(--muted);margin-top:10px;font-family:"Noto Serif SC",serif;font-style:italic;line-height:1.5}
+  .bud-add{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+  .bud-add input{flex:1;padding:8px 10px;font-size:.82rem}
+  .notes-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .notes-list li{display:flex;align-items:flex-start;gap:10px;background:var(--bg-2);border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;font-size:.86rem;line-height:1.5}
+  .notes-list li span{flex:1;font-family:"Noto Serif SC",serif}
+  .notes-list li input[type=checkbox]{margin-top:2px;width:17px;height:17px;flex-shrink:0;accent-color:var(--sea)}
+  .notes-list li.done span{text-decoration:line-through;color:var(--muted)}
+  .note-edit{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .note-edit input[type=checkbox]{width:17px;height:17px;flex-shrink:0;accent-color:var(--sea)}
+  .note-edit input[type=text],.note-edit input:not([type]){flex:1;padding:8px 10px;font-size:.84rem;border-radius:9px}
+  .note-add{display:flex;gap:7px;margin-top:11px}
+  .note-add input{flex:1;padding:8px 10px;font-size:.82rem}
+  .img-picker{display:flex;flex-direction:column;gap:9px}
+  .img-pick-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;align-self:flex-start;padding:9px 15px;border:1.5px dashed var(--sea);color:var(--sea);border-radius:11px;font-size:.82rem;font-weight:600;cursor:pointer;background:var(--sea-soft)}
+  .img-prev{display:flex;flex-wrap:wrap;gap:8px}
+  .img-prev .thumb{position:relative;width:74px;height:74px;border-radius:10px;overflow:hidden;border:1.5px solid var(--line)}
+  .img-prev .thumb img{width:100%;height:100%;object-fit:cover}
+  .img-prev .thumb .x{position:absolute;top:2px;right:2px;width:20px;height:20px;border:none;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.7rem;cursor:pointer;line-height:1}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;margin:2px 0 18px}
+  .gallery figure{margin:0;border-radius:12px;overflow:hidden;border:1.5px solid var(--line);position:relative}
+  .gallery img{width:100%;display:block;cursor:zoom-in}
+  .gallery .gx{position:absolute;top:5px;right:5px;width:24px;height:24px;border:none;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;font-size:.8rem}
+  .gal-add{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px dashed var(--sea);color:var(--sea);border-radius:11px;font-size:.8rem;font-weight:600;cursor:pointer;background:var(--sea-soft);margin-bottom:16px}
+  .gal-head{display:flex;align-items:baseline;gap:8px;font-family:"Noto Serif SC",serif;font-weight:700;font-size:.9rem;margin:2px 0 9px}
+  .gal-head span{font-weight:400;font-size:.72rem;color:var(--muted)}
+  .img-lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+  .img-lightbox img{max-width:100%;max-height:100%;border-radius:10px}
+
+  .sheet-foot{display:flex;gap:8px;margin-top:22px}
+
+  .toast{position:absolute;left:50%;bottom:92px;transform:translateX(-50%) translateY(16px);background:var(--ink);color:var(--bg-2);padding:11px 20px;border-radius:24px;font-size:.85rem;font-weight:500;opacity:0;pointer-events:none;transition:all .28s;z-index:80;box-shadow:var(--shadow);white-space:nowrap}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ===== 电脑端适配 ===== */
+  .stage{display:flex;align-items:center;justify-content:center;gap:56px;min-height:100vh;width:100%}
+  .deskcap{display:none}
+  @media(min-width:900px){
+    body{padding:32px 40px}
+    .deskcap{display:block;max-width:360px;color:#f5eee0}
+    .deskcap .kick{font-size:.72rem;letter-spacing:.36em;color:var(--coral);font-weight:700}
+    .deskcap h1{font-family:"Fraunces","Noto Serif SC",serif;font-weight:900;font-size:3.4rem;line-height:1.02;letter-spacing:-.02em;margin-top:10px;color:#fff}
+    .deskcap h1 em{font-style:italic;color:#5fc7c0}
+    .deskcap p{font-size:1rem;line-height:1.7;color:#d8cfbf;margin-top:18px;font-family:"Noto Serif SC",serif}
+    .deskcap .dtips{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}
+    .deskcap .dtips li{font-size:.92rem;color:#eae1d0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 15px}
+    .deskcap .dhint{margin-top:24px;font-size:.82rem;color:#b7ad9c;font-style:italic;font-family:"Noto Serif SC",serif}
+    .phone{max-width:430px;height:min(90vh,900px);flex-shrink:0}
+  }
+  @media(max-width:899px){
+    body{padding:20px 12px}
+    .stage{gap:0}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+<aside class="deskcap">
+  <div class="kick">XIAOLU · TRAVEL</div>
+  <h1>小鹿的<br><em>旅行攻略</em></h1>
+  <p>手机小程序体验，电脑上也能看。<br>右侧就是完整的攻略本 —— 查看我导入的攻略、导入 / 添加新攻略、从零制定专属行程。</p>
+  <ul class="dtips">
+    <li>📚 我的攻略 · 查看已保存的每一份</li>
+    <li>➕ 导入添加 · 粘贴文本或手动快速建立</li>
+    <li>🗺️ 制定 · 一键生成并自定义编辑</li>
+  </ul>
+  <div class="dhint">💡 电脑上用鼠标点击操作即可，和手机一致。</div>
+</aside>
+<div class="phone">
+  <div class="notch"></div>
+  <div class="statusbar">
+    <span id="clock">9:41</span>
+    <span class="dots">📶 &nbsp;🔋</span>
+  </div>
+
+  <div class="screen">
+    <!-- ========= PAGE 1: 我的攻略 ========= -->
+    <section class="page active" id="page-lib">
+      <div class="ph">
+        <div class="kick">My Trips</div>
+        <h1>🦌 小鹿的<em>攻略</em></h1>
+        <div class="sub">由聪明有趣的mxr导入、亲手做的旅行攻略,都收在这里。点开任意一份即可查看或编辑攻略哦。多多提提意见呀</div>
+      </div>
+      <div class="lib-list" id="libList"></div>
+    </section>
+
+    <!-- ========= PAGE 2: 导入 / 添加 ========= -->
+    <section class="page" id="page-import">
+      <div class="ph">
+        <div class="kick">Import</div>
+        <h1>导入 / <em>添加</em></h1>
+        <div class="sub">把你在别处写好的攻略贴进来,或手动建一份。添加后会出现在「小鹿的攻略」里。</div>
+      </div>
+
+      <div class="seg-method" id="impMethod">
+        <button class="on" data-m="paste">📋 粘贴文本导入</button>
+        <button data-m="quick">✍️ 手动快速添加</button>
+      </div>
+
+      <!-- paste -->
+      <div id="imp-paste">
+        <div class="card">
+          <div class="fld"><label>攻略标题</label>
+            <input id="impTitle" placeholder="例如:我的成都5日慢游"></div>
+          <div class="g2">
+            <div class="fld"><label>城市</label><input id="impCity" placeholder="成都"></div>
+            <div class="fld"><label>人均总预算(元)</label><input id="impBudget" type="number" placeholder="3000"></div>
+          </div>
+          <div class="fld"><label>攻略正文</label>
+            <textarea id="impText" placeholder="按这样的格式贴进来即可(格式很宽松):&#10;&#10;D1 宽窄巷子&#10;09:00 宽窄巷子 逛老街喝盖碗茶&#10;12:00 吃 奎星楼街冒椒火辣&#10;15:00 拍 井巷子砖墙&#10;&#10;D2 熊猫基地&#10;08:30 大熊猫基地 一早去看团子&#10;..."></textarea>
+          </div>
+          <div class="fld"><label>攻略图片(可选,可多选)</label>
+            <div class="img-picker">
+              <label class="img-pick-btn">📷 选择图片<input id="impImgs" type="file" accept="image/*" multiple hidden></label>
+              <div id="impImgPrev" class="img-prev"></div>
+            </div>
+          </div>
+          <p class="stash p.tip" style="font-size:.74rem;color:var(--muted);font-style:italic;font-family:'Noto Serif SC',serif;margin-bottom:14px">
+            识别规则:以 <b>D1 / 第1天 / Day1</b> 开头的行会新起一天;其余每行是一站,行首若有 <b>时间</b>(09:00)会被提取,含「吃/餐/饭」判为吃饭、含「拍/机位/照」判为拍照。</p>
+          <button class="btn btn-primary" id="impParseBtn">解析并预览 →</button>
+        </div>
+      </div>
+
+      <!-- quick -->
+      <div id="imp-quick" style="display:none">
+        <div class="card">
+          <div class="fld"><label>攻略标题</label><input id="qTitle" placeholder="例如:东京周末快闪"></div>
+          <div class="g2">
+            <div class="fld"><label>城市</label><input id="qCity" placeholder="东京"></div>
+            <div class="fld"><label>玩几天</label><input id="qDays" type="number" value="3" min="1" max="30"></div>
+          </div>
+          <div class="fld"><label>人均总预算(元)</label><input id="qBudget" type="number" value="3000"></div>
+          <p style="font-size:.74rem;color:var(--muted);font-style:italic;font-family:'Noto Serif SC',serif;margin-bottom:14px">会为你建一份空白框架(按天数生成空行程 + 通用行李清单 + 预算表),添加后可在编辑里慢慢填。</p>
+          <button class="btn btn-primary" id="qAddBtn">建立并编辑 →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========= PAGE 3: 制定 ========= -->
+    <section class="page" id="page-plan">
+      <div class="ph">
+        <div class="kick">Plan</div>
+        <h1>制定<em>攻略</em></h1>
+        <div class="sub">按你的节奏与预算生成,而非千篇一律的打卡表。也可从已有攻略导入再自定义。</div>
+      </div>
+
+      <div class="card" id="fromExistingCard" style="display:none">
+        <h2><span class="n">↺</span>从已有攻略导入</h2>
+        <div class="fld"><label>选一份已保存的攻略,复制一份来改</label>
+          <select id="cloneSel"></select></div>
+        <button class="btn btn-ghost btn-block" id="cloneBtn">复制这份去编辑 →</button>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">1</span>这趟旅行的样子</h2>
+        <div class="g2">
+          <div class="fld"><label>目的地城市</label>
+            <select id="city"><option value="成都">成都</option><option value="东京">东京</option><option value="曼谷">曼谷</option></select></div>
+          <div class="fld"><label>玩几天</label>
+            <select id="days"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+        </div>
+        <div class="fld"><label>人均总预算(元,不含往返大交通)</label>
+          <input type="number" id="budget" value="3000" min="300" step="100"></div>
+        <div class="fld"><label>同行人</label>
+          <div class="segmented" id="party">
+            <button class="seg on" data-v="solo"><span class="emo">🧍</span>独自</button>
+            <button class="seg" data-v="couple"><span class="emo">💑</span>情侣</button>
+            <button class="seg" data-v="friends"><span class="emo">👯</span>朋友</button>
+            <button class="seg" data-v="family"><span class="emo">👨‍👩‍👧</span>带老小</button>
+          </div></div>
+        <div class="fld"><label>体力程度</label>
+          <div class="segmented" id="energy">
+            <button class="seg" data-v="low"><span class="emo">🐌</span>悠闲</button>
+            <button class="seg on" data-v="mid"><span class="emo">🚶</span>适中</button>
+            <button class="seg" data-v="high"><span class="emo">🏃</span>暴走</button>
+          </div></div>
+        <div class="stash">
+          <h3>📌 我的私藏点位 <span class="tag">优先编入</span></h3>
+          <p class="tip">把你自己查到、朋友推荐、非去不可的地方加进来,我会优先排进对应那天。</p>
+          <div class="stash-row">
+            <input type="text" id="stashName" placeholder="地点名,如某家苍蝇馆子">
+            <select id="stashType"><option value="spot">景点</option><option value="eat">吃饭</option><option value="photo">拍照</option></select>
+            <button class="btn btn-ghost btn-sm" id="addStash">+</button>
+          </div>
+          <div class="stash-list" id="stashList"></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="genBtn">✦ 生成我的专属攻略</button>
+    </section>
+  </div>
+
+  <!-- ========= tab bar ========= -->
+  <nav class="tabbar">
+    <button data-tab="plan"><span class="ti">✦</span>制定</button>
+    <button class="on" data-tab="lib"><span class="ti">🦌</span>我的攻略</button>
+    <button data-tab="import"><span class="ti">📥</span>导入添加</button>
+  </nav>
+
+  <!-- ========= detail / editor sheet ========= -->
+  <div class="sheet" id="sheet">
+    <div class="sheet-bar">
+      <button class="back" id="sheetBack">‹</button>
+      <div class="st"><div class="stt" id="sheetTitle"></div><div class="sts" id="sheetSub"></div></div>
+      <button class="act" id="sheetAct"></button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+</div>
+
+<script>
+/* ============ POI 数据库 ============ */
+const CITIES={
+  "成都":{intro:"慢生活之都,茶馆火锅与熊猫,适合把节奏放慢。",areas:{
+    "宽窄巷子·人民公园":[
+      {name:"宽窄巷子",type:"spot",load:2,best:"morning",cost:0,elderOk:true,desc:"清代街巷改造,茶馆、掏耳朵、川西风情。"},
+      {name:"人民公园鹤鸣茶社",type:"eat",load:1,best:"afternoon",cost:40,elderOk:true,kidOk:true,desc:"竹椅盖碗茶,成都人的下午。"},
+      {name:"奎星楼街",type:"eat",load:1,best:"noon",cost:80,desc:"网红美食街,小吃扎堆。"},
+      {name:"井巷子砖墙",type:"photo",load:1,best:"afternoon",cost:0,desc:"老砖墙浮雕,出片率高。"}],
+    "锦里·武侯祠":[
+      {name:"武侯祠",type:"spot",load:2,best:"morning",cost:50,elderOk:true,desc:"三国文化,红墙竹影经典机位。"},
+      {name:"锦里古街",type:"spot",load:2,best:"afternoon",cost:0,elderOk:true,kidOk:true,desc:"仿古街,小吃与手作,夜景更美。"},
+      {name:"三顾火锅",type:"eat",load:1,best:"evening",cost:120,desc:"地道成都火锅,可点鸳鸯。"},
+      {name:"红墙竹影",type:"photo",load:1,best:"morning",cost:0,desc:"成都最火红墙机位,早上人少。"}],
+    "熊猫基地":[
+      {name:"大熊猫繁育研究基地",type:"spot",load:3,best:"morning",cost:55,kidOk:true,elderOk:true,desc:"务必一早去,园区较大需步行。"},
+      {name:"基地内简餐",type:"eat",load:1,best:"noon",cost:50,kidOk:true,desc:"园区补给,方便。"},
+      {name:"熊猫幼崽玻璃房",type:"photo",load:1,best:"morning",cost:0,kidOk:true,desc:"隔窗拍团子,孩子最爱。"}],
+    "东郊记忆·太古里":[
+      {name:"东郊记忆",type:"spot",load:2,best:"afternoon",cost:0,desc:"工业风文创园,涂鸦红砖。"},
+      {name:"太古里·大慈寺",type:"spot",load:2,best:"afternoon",cost:0,elderOk:true,desc:"古寺与潮流商圈相邻。"},
+      {name:"钢管厂五区串串",type:"eat",load:1,best:"evening",cost:90,desc:"本地串串顶流,排队值得。"},
+      {name:"IFS爬墙熊猫",type:"photo",load:1,best:"afternoon",cost:0,kidOk:true,desc:"标志性打卡点。"}]}},
+  "东京":{intro:"极致细节与秩序感,老铺与潮流并存,适合暴走党。",areas:{
+    "浅草·晴空塔":[
+      {name:"浅草寺·雷门",type:"spot",load:2,best:"morning",cost:0,elderOk:true,desc:"东京最古老寺庙,仲见世商店街。"},
+      {name:"浅草鳗鱼饭老铺",type:"eat",load:1,best:"noon",cost:200,elderOk:true,desc:"百年鳗鱼饭,午市划算。"},
+      {name:"晴空塔",type:"spot",load:2,best:"afternoon",cost:130,kidOk:true,desc:"634米地标展望台。"},
+      {name:"隅田川机位",type:"photo",load:1,best:"afternoon",cost:0,desc:"河畔框住晴空塔。"}],
+    "涩谷·原宿":[
+      {name:"涩谷十字路口",type:"spot",load:2,best:"evening",cost:0,desc:"世界最繁忙路口,夜晚霓虹。"},
+      {name:"明治神宫",type:"spot",load:3,best:"morning",cost:0,elderOk:true,desc:"都市森林,清晨鸟居庄严。"},
+      {name:"竹下通可丽饼",type:"eat",load:1,best:"noon",cost:60,kidOk:true,desc:"边走边吃。"},
+      {name:"涩谷Sky",type:"photo",load:2,best:"evening",cost:150,desc:"露天展望拍夜景。"}],
+    "新宿·御苑":[
+      {name:"新宿御苑",type:"spot",load:2,best:"morning",cost:15,elderOk:true,kidOk:true,desc:"皇家庭园,可野餐。"},
+      {name:"思出横丁",type:"eat",load:1,best:"evening",cost:150,desc:"昭和风串烧小巷。"},
+      {name:"都厅展望台",type:"photo",load:1,best:"afternoon",cost:0,elderOk:true,desc:"免费看全景,晴天见富士山。"}],
+    "台场·银座":[
+      {name:"台场海滨公园",type:"spot",load:2,best:"afternoon",cost:0,kidOk:true,elderOk:true,desc:"彩虹大桥,亲子友好。"},
+      {name:"银座寿司",type:"eat",load:1,best:"noon",cost:300,desc:"高档江户前寿司。"},
+      {name:"teamLab数字艺术",type:"spot",load:2,best:"afternoon",cost:220,kidOk:true,desc:"沉浸式光影,拍照天堂。"}]}},
+  "曼谷":{intro:"热情喧闹的微笑之城,寺庙河运与街头美食,性价比高。",areas:{
+    "大皇宫·卧佛寺":[
+      {name:"大皇宫",type:"spot",load:3,best:"morning",cost:100,elderOk:true,desc:"王室建筑群,着装得体趁早避晒。"},
+      {name:"卧佛寺",type:"spot",load:2,best:"morning",cost:40,elderOk:true,desc:"46米卧佛。"},
+      {name:"河畔泰餐",type:"eat",load:1,best:"noon",cost:70,elderOk:true,desc:"湄南河景配泰餐。"},
+      {name:"郑王庙对岸机位",type:"photo",load:1,best:"evening",cost:0,desc:"日落黎明寺剪影绝美。"}],
+    "考山路·老城":[
+      {name:"考山路",type:"spot",load:2,best:"evening",cost:0,desc:"背包客天堂,夜市酒吧。"},
+      {name:"街头船面",type:"eat",load:1,best:"noon",cost:25,desc:"地道便宜的泰式船面。"},
+      {name:"金山寺",type:"photo",load:2,best:"afternoon",cost:15,desc:"登顶俯瞰老城。"}],
+    "暹罗商圈":[
+      {name:"Siam Paragon",type:"spot",load:2,best:"afternoon",cost:0,kidOk:true,elderOk:true,desc:"顶级商场避暑含海洋馆。"},
+      {name:"建兴酒家咖喱蟹",type:"eat",load:1,best:"evening",cost:150,desc:"招牌咖喱蟹必吃。"},
+      {name:"MBK天桥",type:"photo",load:1,best:"evening",cost:0,desc:"车流光轨城市感。"}],
+    "洽图洽·周末":[
+      {name:"洽图洽周末市集",type:"spot",load:3,best:"morning",cost:0,desc:"上万摊位巨型市集(仅周末)。"},
+      {name:"芒果糯米饭",type:"eat",load:1,best:"noon",cost:20,kidOk:true,desc:"国民甜点。"},
+      {name:"复古摊位区",type:"photo",load:1,best:"afternoon",cost:0,desc:"文艺摊位出片。"}]}}
+};
+const ENERGY_CAP={low:2,mid:3,high:4};
+const ENERGY_LABEL={low:"悠闲",mid:"适中",high:"暴走"};
+const PARTY_LABEL={solo:"独自出行",couple:"情侣",friends:"朋友同行",family:"带老人小孩"};
+function budgetTier(perDay){
+  if(perDay<300)return{name:"精打细算",eat:"街头小吃为主",move:"公交地铁+步行",stayNight:120,eatMul:.7};
+  if(perDay<700)return{name:"舒适均衡",eat:"本地馆子+偶尔网红",move:"地铁为主,偶尔打车",stayNight:240,eatMul:.95};
+  return{name:"品质享受",eat:"精选餐厅+特色体验",move:"打车/包车为主",stayNight:450,eatMul:1.4};
+}
+
+/* ============ 工具 ============ */
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+const esc=s=>(s==null?'':(''+s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const LIB_KEY="xiaolu_travel_guides_v2";
+const API="/api/guides";
+// 内存缓存:所有同步读取都走 LIB(启动时从后端 /api/guides 水合,失败回退 localStorage)。
+let LIB=[];
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800);}
+function loadLib(){return LIB;}
+function saveLib(a){LIB=a||[];try{localStorage.setItem(LIB_KEY,JSON.stringify(LIB));}catch(e){}}
+// 新增/更新:同步更新内存缓存 + 本地镜像,并异步写回后端;后端不可用时静默回退到本地。
+function upsert(g){const i=LIB.findIndex(x=>x.id===g.id);if(i>=0)LIB[i]=g;else LIB.unshift(g);saveLib(LIB);
+  fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(g)}).catch(function(){});}
+// 从后端拉取全部攻略;失败时回退到本地缓存(含种子)。返回 Promise。
+function hydrateLib(){return fetch(API).then(function(r){if(!r.ok)throw new Error('bad');return r.json();}).then(function(list){
+    if(Array.isArray(list)){LIB=list;try{localStorage.setItem(LIB_KEY,JSON.stringify(LIB));}catch(e){}}
+    return LIB;
+  }).catch(function(){
+    try{LIB=JSON.parse(localStorage.getItem(LIB_KEY)||'[]');}catch(e){LIB=[];}
+    var ids=LIB.map(function(g){return g.id;});
+    var add=(typeof SEED_GUIDES!=='undefined'?SEED_GUIDES:[]).filter(function(s){return ids.indexOf(s.id)<0;});
+    if(add.length){LIB=add.concat(LIB);try{localStorage.setItem(LIB_KEY,JSON.stringify(LIB));}catch(e){}}
+    return LIB;
+  });}
+function clock(){const d=new Date();$('#clock').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');}
+
+/* 数据模型:guide = {id,title,city,days,budgetSet(数字),perDay,tier,party,energy,isFamily,plan[],pack[],notes[],images[],source,savedAt} */
+function recomputeLoads(g){(g.plan||[]).forEach(d=>{const dl=d.stops.reduce((s,c)=>s+(+c.load||1),0);d.dayLoad=dl;d.loadLvl=dl<=4?'easy':dl<=6?'mid':'hard';});}
+// 一日游:days=1 但行程分成多段(区域/时段)。此时用「段」而非「天」展示。
+function isOneDay(g){return (+g.days===1)&&(g.plan&&g.plan.length>1);}
+function segBadge(g,i){return isOneDay(g)?('①②③④⑤⑥⑦⑧⑨⑩'[i]||('S'+(i+1))):('D'+(i+1));}
+function daysLabel(g){return isOneDay(g)?('一日游 · '+g.plan.length+' 段行程'):((+g.days||1)+' 天');}
+
+function buildPack(g){
+  const cats=[
+    {icon:'📄',name:'证件&财务',items:[{t:'身份证/护照'},{t:'现金&银行卡'},(g.city==='东京'||g.city==='曼谷')?{t:'护照+签证',r:'出境必备'}:null,{t:'常用支付App'}]},
+    {icon:'👕',name:'衣物',items:[{t:`换洗衣物 ${(+g.days||1)+1} 套`,r:'按天数+1'},g.energy==='high'?{t:'舒适运动鞋',r:'暴走护脚'}:{t:'舒适步行鞋'},g.city==='曼谷'?{t:'防晒轻薄衣+泳衣',r:'热带炎热'}:null,g.isFamily?{t:'老人小孩备用衣物',r:'亲子出行'}:null]},
+    {icon:'💊',name:'健康&防护',items:[{t:'防晒霜'},{t:'常用药&创可贴'},g.isFamily?{t:'儿童/老人常备药',r:'降低风险'}:null,g.energy!=='low'?{t:'足贴/护膝',r:'走得多护关节'}:null]},
+    {icon:'🔌',name:'电子&杂项',items:[{t:'充电宝&数据线'},g.city!=='成都'?{t:'转换插头',r:'境外插座不同'}:null,{t:'雨伞/雨衣'},{t:'环保购物袋'}]}
+  ];
+  return cats.map(c=>({icon:c.icon,name:c.name,items:c.items.filter(Boolean).map(it=>({t:it.t,r:it.r||'',checked:false}))}));
+}
+function buildBudget(g){
+  const t=g.tier||budgetTier(g.perDay||300),days=+g.days||1;
+  const eatPerDay=Math.round((g.city==='东京'?260:g.city==='曼谷'?90:130)*t.eatMul);
+  const eat=eatPerDay*days,stay=t.stayNight*days;
+  const move=Math.round((t.move.includes('打车')?120:t.move.includes('地铁为主')?60:35)*days);
+  let tickets=0;(g.plan||[]).forEach(d=>d.stops.forEach(s=>{if(s.cost)tickets+=+s.cost;}));
+  const misc=Math.round((eat+stay+move+tickets)*0.12);
+  return [
+    {k:'🏨 住宿',v:stay,note:`${t.stayNight}/晚 × ${days} 晚`},
+    {k:'🍜 餐饮',v:eat,note:`${eatPerDay}/天 × ${days} 天 · ${t.eat}`},
+    {k:'🚕 市内交通',v:move,note:t.move},
+    {k:'🎟️ 门票/体验',v:tickets,note:'按行程实际点位累计'},
+    {k:'🎁 购物/杂项',v:misc,note:'预留 12% 弹性'}
+  ];
+}
+// 事项:出行前/中的注意事项、提醒清单。按城市/节奏/亲子给默认建议。
+function buildNotes(g){
+  const n=[];
+  n.push('提前下载好导航/官方App,存好门票与订单截图');
+  n.push('身份证/证件随身,重要证件拍照备份到手机');
+  if(g.city==='东京'||g.city==='曼谷')n.push('确认护照有效期与签证,兑换少量当地现金');
+  n.push(g.energy==='high'?'节奏偏满,穿最舒适的鞋,随身带水和小零食':'安排有留白,累了就找地方坐下歇歇');
+  if(g.isFamily)n.push('带老人小孩:备常用药、注意补水与如厕点,行程量力而行');
+  n.push('出门看天气预报,按需带伞/防晒');
+  n.push('留意每个点位的开放时间与最后入场时间,别白跑');
+  n.push('保管好随身财物,人多的地方注意防挤防丢');
+  return n.map(t=>({t,checked:false}));
+}
+
+/* ============ 生成引擎 ============ */
+let party="solo",energy="mid",stash=[];
+function bindSeg(sel,set){$$(sel+' .seg').forEach(b=>b.onclick=()=>{$$(sel+' .seg').forEach(x=>x.classList.remove('on'));b.classList.add('on');set(b.dataset.v);});}
+bindSeg('#party',v=>party=v);
+bindSeg('#energy',v=>energy=v);
+$('#addStash').onclick=()=>{const n=$('#stashName').value.trim();if(!n)return;stash.push({name:n,type:$('#stashType').value});$('#stashName').value='';renderStash();$('#stashName').focus();};
+$('#stashName').addEventListener('keydown',e=>{if(e.key==='Enter')$('#addStash').click();});
+function renderStash(){const T={spot:'景点',eat:'吃饭',photo:'拍照'};$('#stashList').innerHTML=stash.map((s,i)=>`<span class="stash-item"><b>${esc(s.name)}</b> · ${T[s.type]} <button class="rm" data-i="${i}">✕</button></span>`).join('');$$('#stashList .rm').forEach(b=>b.onclick=()=>{stash.splice(+b.dataset.i,1);renderStash();});}
+
+function generate(){
+  const city=$('#city').value,days=+$('#days').value,budgetSet=+$('#budget').value||0;
+  const cap=ENERGY_CAP[energy],isFamily=party==="family",perDay=Math.round(budgetSet/days),tier=budgetTier(perDay),data=CITIES[city];
+  const dayCap=isFamily?Math.max(2,cap-1):cap;
+  const areaNames=Object.keys(data.areas);
+  const sbt={spot:[],eat:[],photo:[]};stash.forEach(s=>sbt[s.type].push(s));
+  const plan=[];
+  for(let d=0;d<days;d++){
+    const areaName=areaNames[d%areaNames.length];
+    let pool=data.areas[areaName].slice();
+    if(isFamily)pool=pool.sort((a,b)=>((b.elderOk||b.kidOk)?1:0)-((a.elderOk||a.kidOk)?1:0));
+    const spots=pool.filter(p=>p.type==='spot'),eats=pool.filter(p=>p.type==='eat'),photos=pool.filter(p=>p.type==='photo');
+    let chosen=[];
+    const mySpot=sbt.spot.shift();if(mySpot)chosen.push({name:mySpot.name,mine:true,type:'spot',best:'afternoon',load:2,cost:null,desc:'你的私藏,已优先安排。'});
+    spots.slice(0,dayCap-(mySpot?1:0)).forEach(s=>chosen.push({...s}));
+    const myEat=sbt.eat.shift();if(myEat)chosen.push({name:myEat.name,mine:true,type:'eat',best:'noon',load:1,cost:null,desc:'你私藏的吃饭点,已排入。'});
+    if(eats[0])chosen.push({...eats[0]});
+    if(eats[1]&&!isFamily&&energy!=='low')chosen.push({...eats[1]});
+    const myPhoto=sbt.photo.shift();if(myPhoto)chosen.push({name:myPhoto.name,mine:true,type:'photo',best:'afternoon',load:1,cost:null,desc:'你标记的拍照点。'});
+    if(photos[0])chosen.push({...photos[0]});
+    const slot={morning:1,noon:2,afternoon:3,evening:4,any:3};
+    chosen.sort((a,b)=>(slot[a.best]||3)-(slot[b.best]||3));
+    const times=["09:00","11:30","13:00","15:00","17:30","19:30"];
+    chosen=chosen.map((c,i)=>({...c,time:times[i]||"随时"}));
+    plan.push({area:areaName,stops:chosen});
+  }
+  [...sbt.spot,...sbt.eat,...sbt.photo].forEach(s=>plan[plan.length-1].stops.push({name:s.name,mine:true,type:s.type,time:"机动",load:1,cost:null,desc:'你的私藏,加入最后的机动时间。'}));
+  const g={id:uid(),title:`${city}·${days}天`,city,days,budgetSet,perDay,tier,party,energy,isFamily,plan,source:'generated'};
+  g.pack=buildPack(g);g.notes=buildNotes(g);
+  recomputeLoads(g);
+  openEditor(g,true);
+}
+
+/* ============ 文本导入解析 ============ */
+function parseText(title,city,budgetSet,text){
+  const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  const plan=[];let cur=null;
+  const dayRe=/^(D\s*\d+|Day\s*\d+|第\s*[0-9一二三四五六七八九十]+\s*天)[\s:：.、-]*(.*)$/i;
+  const timeRe=/^(\d{1,2}[:：]\d{2})\s*[-—、\s]*(.*)$/;
+  lines.forEach(l=>{
+    const dm=l.match(dayRe);
+    if(dm){cur={area:(dm[2]||'').trim()||('第'+(plan.length+1)+'天'),stops:[]};plan.push(cur);return;}
+    if(!cur){cur={area:'行程',stops:[]};plan.push(cur);}
+    let time='随时',rest=l;
+    const tm=l.match(timeRe);if(tm){time=tm[1].replace('：',':');rest=tm[2].trim()||'安排';}
+    let type='spot';
+    if(/[吃餐饭食]/.test(rest))type='eat';
+    else if(/[拍照]|机位/.test(rest))type='photo';
+    // split name/desc: first 2-12 chars up to space/punct as name
+    let name=rest,desc='';
+    const sp=rest.search(/[ 　,，。;；]/);
+    if(sp>0&&sp<=16){name=rest.slice(0,sp);desc=rest.slice(sp+1).trim();}
+    cur.stops.push({name:name||'一站',type,time,load:type==='spot'?2:1,cost:null,desc});
+  });
+  if(!plan.length)plan.push({area:'行程',stops:[]});
+  const days=plan.length,perDay=budgetSet?Math.round(budgetSet/days):300;
+  const g={id:uid(),title:title||((city||'我的')+'攻略'),city:city||'自定义',days,budgetSet:budgetSet||0,perDay,
+    tier:budgetTier(perDay),party:'solo',energy:'mid',isFamily:false,plan,source:'imported'};
+  g.pack=buildPack(g);g.notes=buildNotes(g);
+  recomputeLoads(g);
+  return g;
+}
+
+/* ============ 编辑器 / 详情 ============ */
+let cur=null,editMode=false,activePane='itin';
+function openEditor(g,edit){cur=g;editMode=!!edit;activePane='itin';renderSheet();$('#sheet').classList.add('open');}
+function closeSheet(){$('#sheet').classList.remove('open');cur=null;}
+$('#sheetBack').onclick=closeSheet;
+
+function renderSheet(){
+  const g=cur;recomputeLoads(g);
+  $('#sheetTitle').textContent=g.title;
+  $('#sheetSub').textContent=`${daysLabel(g)} · ${ENERGY_LABEL[g.energy]||'自定'}节奏 · ${PARTY_LABEL[g.party]||'自定'}`;
+  $('#sheetAct').textContent=editMode?'✓ 完成':'✎ 编辑';
+  $('#sheetAct').onclick=()=>{editMode=!editMode;renderSheet();toast(editMode?'编辑模式,直接改':'已退出编辑');};
+
+  const bits=[];
+  bits.push(`${g.source==='imported'?'导入的攻略':'按 <b>'+ (ENERGY_LABEL[g.energy]||'自定') +'</b> 节奏排'}${g.isFamily?',已为老人小孩降低强度':''}。`);
+  const mineCnt=(g.plan||[]).reduce((n,d)=>n+d.stops.filter(s=>s.mine).length,0);
+  if(mineCnt)bits.push(`含你的 <b>${mineCnt} 个私藏点位</b>(红色标记)。`);
+  bits.push(editMode?`<b>✎ 编辑中</b>:路线/行李/事项都能改,改完点右上「完成」再「保存」。`:'');
+
+  $('#sheetBody').innerHTML=`
+    ${editMode?`<div class="title-edit fld"><label>攻略标题</label><input id="edTitle" value="${esc(g.title)}"></div>`:''}
+    <div class="persona">${bits.filter(Boolean).join(' ')}</div>
+    <div class="tabs">
+      <button class="tab${activePane==='itin'?' on':''}" data-p="itin">📍 路线</button>
+      <button class="tab${activePane==='pack'?' on':''}" data-p="pack">🧳 行李</button>
+      <button class="tab${activePane==='notes'?' on':''}" data-p="notes">📝 事项</button>
+    </div>
+    <div id="paneWrap"></div>
+    <div class="sheet-foot">
+      <button class="btn btn-primary" id="edSave">🦌 保存进我的攻略</button>
+      ${editMode?'':'<button class="btn btn-ghost" id="edClone">↺ 复制一份改</button>'}
+    </div>`;
+  if(editMode)$('#edTitle').onchange=e=>{g.title=e.target.value;$('#sheetTitle').textContent=g.title;};
+  $$('#sheetBody .tab').forEach(t=>t.onclick=()=>{activePane=t.dataset.p;$$('#sheetBody .tab').forEach(x=>x.classList.toggle('on',x===t));renderPane();});
+  $('#edSave').onclick=()=>{g.savedAt=new Date().toISOString();upsert(g);toast('已保存进小鹿的攻略 🦌');renderLib();};
+  const clo=$('#edClone');if(clo)clo.onclick=()=>{const c=JSON.parse(JSON.stringify(g));c.id=uid();c.title=g.title+'(副本)';c.source='generated';openEditor(c,true);toast('已复制一份,开始编辑');};
+  renderPane();
+}
+function renderPane(){({itin:renderItin,pack:renderPack,notes:renderNotes}[activePane])();}
+
+function renderItin(){
+  const g=cur,wrap=$('#paneWrap');
+  const TAG={eat:'t-eat',photo:'t-photo'},TYPE={spot:'游玩',eat:'🍜 吃饭',photo:'📷 拍照'};
+  if(editMode){
+    wrap.innerHTML=`<div class="pane on">`+galleryHTML(g)+g.plan.map((day,i)=>`
+      <div class="day">
+        <div class="day-h"><span class="badge">${segBadge(g,i)}</span>
+          <div class="area-edit" style="flex:1"><input value="${esc(day.area)}" data-area="${i}" placeholder="${isOneDay(g)?'这一段的主题/区域':'这一天的主题/区域'}"></div></div>
+        ${day.stops.map((s,j)=>`
+          <div class="stop-edit">
+            ${s.mine?'<span class="stop-mine-flag">我的私藏</span>':''}
+            <input value="${esc(s.time)}" data-d="${i}" data-j="${j}" data-f="time" placeholder="时间">
+            <select data-d="${i}" data-j="${j}" data-f="type">
+              <option value="spot"${s.type==='spot'?' selected':''}>游玩</option>
+              <option value="eat"${s.type==='eat'?' selected':''}>吃饭</option>
+              <option value="photo"${s.type==='photo'?' selected':''}>拍照</option></select>
+            <input class="full" value="${esc(s.name)}" data-d="${i}" data-j="${j}" data-f="name" placeholder="地点名称">
+            <input class="full" value="${esc(s.desc||'')}" data-d="${i}" data-j="${j}" data-f="desc" placeholder="备注/描述">
+            <input type="number" value="${s.cost==null?'':s.cost}" data-d="${i}" data-j="${j}" data-f="cost" placeholder="¥花费(留空=未定)">
+            <div class="ops"><button class="mini" data-del="${i}.${j}">🗑</button></div>
+          </div>`).join('')}
+        <div class="add-line"><button class="btn btn-ghost btn-sm" data-add="${i}">+ 加一站</button></div>
+      </div>`).join('')+`<button class="btn btn-ghost btn-block" id="addDay">${isOneDay(g)?'+ 加一段':'+ 加一天'}</button></div>`;
+    bindItinEdit();bindGallery();
+  }else{
+    wrap.innerHTML=`<div class="pane on">`+galleryHTML(g)+g.plan.map((day,i)=>{
+      const lc={easy:'load-easy',mid:'load-mid',hard:'load-hard'}[day.loadLvl]||'load-mid';
+      const lt={easy:'轻松',mid:'适中',hard:'偏满'}[day.loadLvl]||'适中';
+      return `<div class="day">
+        <div class="day-h"><span class="badge">${segBadge(g,i)}</span>
+          <div><div class="area">${esc(day.area)}</div><div class="dmeta">${day.stops.length} 站</div></div>
+          <span class="day-load ${lc}">强度 ${lt}</span></div>
+        <div class="timeline">${day.stops.map(s=>`
+          <div class="stop ${s.mine?'mine':''}">
+            <div class="time">${esc(s.time)}</div>
+            <div class="sname">${esc(s.name)} ${s.mine?'<span class="mine-tag">我的私藏</span>':''}</div>
+            <div class="sdesc">${esc(s.desc||'')}</div>
+            <div class="tags"><span class="${TAG[s.type]||''}">${TYPE[s.type]||'游玩'}</span>
+            ${s.cost?`<span>约¥${s.cost}</span>`:s.cost===0?'<span>免费</span>':''}</div>
+          </div>`).join('')}</div>
+      </div>`;
+    }).join('')+`</div>`;
+    bindGallery();
+  }
+}
+// 攻略图片画廊(路线页顶部)。编辑模式可增删,阅读模式点击放大。
+function galleryHTML(g){
+  const imgs=g.images||[];
+  let h='';
+  if(editMode)h+=`<div class="gal-head">📷 攻略图片<span>${imgs.length?imgs.length+' 张 · 点✕删除':'还没有,点下方按钮添加'}</span></div>`;
+  if(imgs.length||editMode)h+=`<div class="gallery">`+imgs.map((src,i)=>`<figure><img src="${src}" data-gimg="${i}">${editMode?`<button class="gx" data-gdel="${i}">✕</button>`:''}</figure>`).join('')+`</div>`;
+  if(editMode)h+=`<label class="gal-add">📷 添加图片<input id="galAdd" type="file" accept="image/*" multiple hidden></label>`;
+  return h;
+}
+function bindGallery(){
+  const w=$('#paneWrap');
+  w.querySelectorAll('[data-gimg]').forEach(im=>im.onclick=()=>{
+    if(editMode)return;
+    const box=document.createElement('div');box.className='img-lightbox';
+    box.innerHTML=`<img src="${im.src}">`;box.onclick=()=>box.remove();
+    document.body.appendChild(box);
+  });
+  w.querySelectorAll('[data-gdel]').forEach(b=>b.onclick=()=>{cur.images.splice(+b.dataset.gdel,1);renderItin();});
+  const add=$('#galAdd');
+  if(add)add.onchange=async e=>{
+    const files=[...e.target.files];if(!files.length)return;
+    if(!cur.images)cur.images=[];
+    toast('正在处理图片…');
+    for(const f of files){if(f.type.startsWith('image/'))cur.images.push(await fileToImg(f));}
+    e.target.value='';renderItin();toast('图片已添加');
+  };
+}
+function bindItinEdit(){
+  const w=$('#paneWrap');
+  w.querySelectorAll('[data-f]').forEach(el=>el.onchange=()=>{
+    const s=cur.plan[+el.dataset.d].stops[+el.dataset.j];
+    if(el.dataset.f==='cost')s.cost=el.value===''?null:+el.value;else s[el.dataset.f]=el.value;
+    if(el.dataset.f==='type'&&!s.mine)s.load=el.value==='spot'?2:1;
+  });
+  w.querySelectorAll('[data-area]').forEach(el=>el.onchange=()=>{cur.plan[+el.dataset.area].area=el.value;});
+  w.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const[i,j]=b.dataset.del.split('.').map(Number);cur.plan[i].stops.splice(j,1);recomputeLoads(cur);renderItin();});
+  w.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{cur.plan[+b.dataset.add].stops.push({name:'新地点',type:'spot',time:'随时',desc:'',cost:null,load:1});recomputeLoads(cur);renderItin();});
+  $('#addDay').onclick=()=>{cur.plan.push({area:'新的一天',stops:[]});cur.days=cur.plan.length;recomputeLoads(cur);renderItin();};
+}
+
+function renderPack(){
+  const g=cur,wrap=$('#paneWrap');
+  if(!g.pack)g.pack=buildPack(g);
+  if(editMode){
+    wrap.innerHTML=`<div class="pane on">`+g.pack.map((c,ci)=>`
+      <div class="pack-cat"><h4>${c.icon} <input value="${esc(c.name)}" data-cn="${ci}" style="border:none;background:none;font-family:inherit;font-weight:600;width:60%;padding:2px"></h4>
+        <ul>${c.items.map((it,ii)=>`<li>
+          <input type="checkbox" ${it.checked?'checked':''} data-c="${ci}" data-i="${ii}" data-pk="check">
+          <input value="${esc(it.t)}" data-c="${ci}" data-i="${ii}" data-pk="text" style="flex:1;padding:6px 8px;font-size:.84rem">
+          <button class="del-x" data-pkd="${ci}.${ii}">✕</button></li>`).join('')}</ul>
+        <div class="pack-add"><input placeholder="加一件…" data-pka="${ci}"><button class="btn btn-ghost btn-sm" data-pkb="${ci}">+</button></div>
+      </div>`).join('')+`<button class="btn btn-ghost btn-block" id="addCat">+ 加一个分类</button></div>`;
+    bindPackEdit();
+  }else{
+    wrap.innerHTML=`<div class="pane on">`+g.pack.map(c=>`
+      <div class="pack-cat"><h4>${c.icon} ${esc(c.name)}</h4>
+        <ul>${c.items.map(it=>`<li><input type="checkbox" ${it.checked?'checked':''} data-ck="1"><span>${esc(it.t)}</span></li>${it.r?`<li class="reason">↳ ${esc(it.r)}</li>`:''}`).join('')}</ul>
+      </div>`).join('')+`</div>`;
+    // read view: allow ticking, persist to state (not saved until 保存)
+    let idx=0;g.pack.forEach(c=>c.items.forEach(it=>{const cb=wrap.querySelectorAll('[data-ck]')[idx++];if(cb)cb.onchange=()=>{it.checked=cb.checked;};}));
+  }
+}
+function bindPackEdit(){
+  const w=$('#paneWrap');
+  w.querySelectorAll('[data-pk=text]').forEach(el=>el.onchange=()=>{cur.pack[+el.dataset.c].items[+el.dataset.i].t=el.value;});
+  w.querySelectorAll('[data-pk=check]').forEach(el=>el.onchange=()=>{cur.pack[+el.dataset.c].items[+el.dataset.i].checked=el.checked;});
+  w.querySelectorAll('[data-cn]').forEach(el=>el.onchange=()=>{cur.pack[+el.dataset.cn].name=el.value;});
+  w.querySelectorAll('[data-pkd]').forEach(b=>b.onclick=()=>{const[c,i]=b.dataset.pkd.split('.').map(Number);cur.pack[c].items.splice(i,1);renderPack();});
+  w.querySelectorAll('[data-pkb]').forEach(b=>b.onclick=()=>{const c=+b.dataset.pkb;const inp=w.querySelector(`[data-pka="${c}"]`);const v=inp.value.trim();if(!v)return;cur.pack[c].items.push({t:v,r:'',checked:false});renderPack();});
+  $('#addCat').onclick=()=>{cur.pack.push({icon:'📦',name:'新分类',items:[]});renderPack();};
+}
+
+function renderNotes(){
+  const g=cur,wrap=$('#paneWrap');
+  if(!g.notes||!g.notes.length)g.notes=buildNotes(g);
+  const items=g.notes;
+  if(editMode){
+    wrap.innerHTML=`<div class="pane on">
+      <div class="notes-wrap">${items.map((it,i)=>`<div class="note-edit">
+        <input type="checkbox" ${it.checked?'checked':''} data-nc="${i}">
+        <input value="${esc(it.t)}" data-nt="${i}" placeholder="注意事项…">
+        <button class="del-x" data-nd="${i}">✕</button></div>`).join('')}</div>
+      <div class="note-add"><input id="nnew" placeholder="加一条注意事项…"><button class="btn btn-ghost btn-sm" id="nAdd">+</button></div>
+      <div class="budget-note">出行前逐条过一遍,勾掉已确认的。改完记得点右上「完成」再保存。</div></div>`;
+    bindNotesEdit();
+  }else{
+    wrap.innerHTML=`<div class="pane on">
+      <ul class="notes-list">${items.map((it,i)=>`<li class="${it.checked?'done':''}"><input type="checkbox" ${it.checked?'checked':''} data-nk="${i}"><span>${esc(it.t)}</span></li>`).join('')}</ul>
+      <div class="budget-note">共 ${items.length} 条提醒 · 勾选表示已确认(需点保存才会记住)。</div></div>`;
+    wrap.querySelectorAll('[data-nk]').forEach(cb=>cb.onchange=()=>{g.notes[+cb.dataset.nk].checked=cb.checked;cb.closest('li').classList.toggle('done',cb.checked);});
+  }
+}
+function bindNotesEdit(){
+  const w=$('#paneWrap');
+  w.querySelectorAll('[data-nt]').forEach(el=>el.onchange=()=>{cur.notes[+el.dataset.nt].t=el.value;});
+  w.querySelectorAll('[data-nc]').forEach(el=>el.onchange=()=>{cur.notes[+el.dataset.nc].checked=el.checked;});
+  w.querySelectorAll('[data-nd]').forEach(b=>b.onclick=()=>{cur.notes.splice(+b.dataset.nd,1);renderNotes();});
+  $('#nAdd').onclick=()=>{const v=$('#nnew').value.trim();if(!v)return;cur.notes.push({t:v,checked:false});renderNotes();};
+  $('#nnew').addEventListener('keydown',e=>{if(e.key==='Enter')$('#nAdd').click();});
+}
+
+/* ============ 页面1: 攻略库渲染 ============ */
+function renderLib(){
+  const lib=loadLib();const list=$('#libList');
+  if(!lib.length){list.innerHTML=`<div class="empty"><div class="ei">🗺️</div><p>还没有攻略。<br>去「制定」做一份,或在「导入添加」贴一份进来。</p></div>`;fillCloneSel();return;}
+  list.innerHTML=lib.map(g=>{
+    const d=g.savedAt?new Date(g.savedAt):new Date();
+    const ds=`${d.getMonth()+1}月${d.getDate()}日`;
+    const src=g.source==='imported'?'<span class="src src-imp">导入</span>':'<span class="src src-gen">生成</span>';
+    return `<div class="g-card" data-open="${g.id}">
+      <div class="row1"><h3>🦌 ${esc(g.title)}</h3>${src}</div>
+      <div class="meta"><span>📍 ${esc(g.city||'自定义')}</span><span>🗓️ ${daysLabel(g)}</span>${g.images&&g.images.length?`<span>📷 ${g.images.length} 张图</span>`:''}</div>
+      <div class="chips"><span class="chip">${ENERGY_LABEL[g.energy]||'自定节奏'}</span><span class="chip">${PARTY_LABEL[g.party]||'自定同行'}</span><span class="chip">存于 ${ds}</span></div>
+      <div class="go">点开查看 / 编辑 ›</div>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('[data-open]').forEach(c=>c.onclick=()=>{const g=loadLib().find(x=>x.id===c.dataset.open);if(g)openEditor(JSON.parse(JSON.stringify(g)),false);});
+  fillCloneSel();
+}
+function fillCloneSel(){
+  const lib=loadLib(),sel=$('#cloneSel'),card=$('#fromExistingCard');
+  if(!lib.length){card.style.display='none';return;}
+  card.style.display='block';
+  sel.innerHTML=lib.map(g=>`<option value="${g.id}">${esc(g.title)} · ${daysLabel(g)}</option>`).join('');
+}
+$('#cloneBtn').onclick=()=>{const id=$('#cloneSel').value;const g=loadLib().find(x=>x.id===id);if(!g)return;const c=JSON.parse(JSON.stringify(g));c.id=uid();c.title=g.title+'(自定义)';c.source='generated';openEditor(c,true);toast('已复制,自由编辑吧');};
+
+/* ============ 导入页交互 ============ */
+// 图片压缩为 dataURL(限制最长边,避免 localStorage 爆量)
+function fileToImg(file,maxSide=1280,quality=.82){
+  return new Promise(res=>{
+    const fr=new FileReader();
+    fr.onload=()=>{
+      const im=new Image();
+      im.onload=()=>{
+        let{width:w,height:h}=im;
+        if(Math.max(w,h)>maxSide){const s=maxSide/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s);}
+        const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+        cv.getContext('2d').drawImage(im,0,0,w,h);
+        try{res(cv.toDataURL('image/jpeg',quality));}catch(e){res(fr.result);}
+      };
+      im.onerror=()=>res(fr.result);
+      im.src=fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+let impImgStage=[];
+function renderImpPrev(){
+  const box=$('#impImgPrev');if(!box)return;
+  box.innerHTML=impImgStage.map((src,i)=>`<div class="thumb"><img src="${src}"><button class="x" data-ix="${i}">✕</button></div>`).join('');
+  box.querySelectorAll('[data-ix]').forEach(b=>b.onclick=()=>{impImgStage.splice(+b.dataset.ix,1);renderImpPrev();});
+}
+const impImgsEl=$('#impImgs');
+if(impImgsEl)impImgsEl.onchange=async e=>{
+  const files=[...e.target.files];if(!files.length)return;
+  toast('正在处理图片…');
+  for(const f of files){if(f.type.startsWith('image/'))impImgStage.push(await fileToImg(f));}
+  e.target.value='';renderImpPrev();toast('图片已添加');
+};
+$$('#impMethod button').forEach(b=>b.onclick=()=>{$$('#impMethod button').forEach(x=>x.classList.toggle('on',x===b));const m=b.dataset.m;$('#imp-paste').style.display=m==='paste'?'block':'none';$('#imp-quick').style.display=m==='quick'?'block':'none';});
+$('#impParseBtn').onclick=()=>{
+  const text=$('#impText').value.trim();if(!text&&!impImgStage.length){toast('先贴入攻略正文或添加图片');return;}
+  const g=parseText($('#impTitle').value.trim(),$('#impCity').value.trim(),+$('#impBudget').value||0,text||'图片攻略');
+  g.images=impImgStage.slice();
+  upsert({...g,savedAt:new Date().toISOString()});
+  renderLib();openEditor(loadLib()[0],false);
+  $('#impText').value='';$('#impTitle').value='';$('#impCity').value='';$('#impBudget').value='';
+  impImgStage=[];renderImpPrev();
+  toast('已导入并加入我的攻略 🦌');
+};
+$('#qAddBtn').onclick=()=>{
+  const title=$('#qTitle').value.trim(),city=$('#qCity').value.trim()||'自定义',days=Math.max(1,+$('#qDays').value||1),budgetSet=+$('#qBudget').value||0;
+  const perDay=budgetSet?Math.round(budgetSet/days):300;
+  const plan=[];for(let i=0;i<days;i++)plan.push({area:'第'+(i+1)+'天',stops:[]});
+  const g={id:uid(),title:title||(city+'攻略'),city,days,budgetSet,perDay,tier:budgetTier(perDay),party:'solo',energy:'mid',isFamily:false,plan,source:'imported'};
+  g.pack=buildPack(g);g.notes=buildNotes(g);recomputeLoads(g);
+  upsert({...g,savedAt:new Date().toISOString()});renderLib();openEditor(loadLib()[0],true);
+  $('#qTitle').value='';$('#qCity').value='';
+  toast('已建立,开始填充吧');
+};
+
+/* ============ tab 导航 ============ */
+$$('.tabbar button').forEach(b=>b.onclick=()=>{
+  $$('.tabbar button').forEach(x=>x.classList.toggle('on',x===b));
+  $$('.page').forEach(p=>p.classList.remove('active'));
+  $('#page-'+b.dataset.tab).classList.add('active');
+  $('.screen').scrollTop=0;
+  if(b.dataset.tab==='lib')renderLib();
+  if(b.dataset.tab==='plan')fillCloneSel();
+});
+
+$('#genBtn').onclick=generate;
+
+/* ============ 启动 ============ */
+clock();setInterval(clock,30000);
+const SEED_GUIDES=[{"id": "seed_universal", "source": "imported", "title": "北京环球影城攻略", "city": "北京", "days": 1, "budgetSet": 0, "party": "friends", "energy": "high", "isFamily": false, "plan": [{"area": "必备 & 入园", "stops": [{"name": "下载官方APP「北京环球度假区」", "type": "spot", "time": "入园前", "desc": "看排队时长必备", "cost": null, "load": 2}, {"name": "带身份证+充电宝+水+少量零食", "type": "spot", "time": "入园前", "desc": "园区有免费接水点,矿泉水15一杯", "cost": null, "load": 2}, {"name": "小黄人园区(先冲)", "type": "spot", "time": "09:00", "desc": "错峰路线第一站", "cost": null, "load": 2}, {"name": "萌转过山车", "type": "spot", "time": "09:20", "desc": "⭐4 推荐,很快不刺激", "cost": null, "load": 2}, {"name": "小黄人闹翻天", "type": "spot", "time": "10:00", "desc": "⭐4 推荐,沉浸感还行", "cost": null, "load": 2}], "dayLoad": 10, "loadLvl": "hard"}, {"area": "功夫熊猫 & 变形金刚", "stops": [{"name": "灯影传奇", "type": "spot", "time": "11:00", "desc": "⭐4 推荐,转圈圈", "cost": null, "load": 2}, {"name": "炫转武侠", "type": "spot", "time": "11:40", "desc": "⭐4 推荐,旋转木马可以玩", "cost": null, "load": 2}, {"name": "漂流者小馆(午饭)", "type": "eat", "time": "12:30", "desc": "三只扫帚排队太久改这家,汉堡一般", "cost": 80, "load": 1}, {"name": "火种源争夺战", "type": "spot", "time": "14:00", "desc": "⭐5 必刷!戴护镜很真实", "cost": null, "load": 2}, {"name": "霸天虎过山车", "type": "spot", "time": "15:00", "desc": "⭐4 很刺激时间短,慎玩", "cost": null, "load": 2}, {"name": "大黄蜂回旋机", "type": "spot", "time": "15:40", "desc": "⭐4 简单轻松转圈圈", "cost": null, "load": 2}], "dayLoad": 11, "loadLvl": "hard"}, {"area": "侏罗纪 · 好莱坞 · 哈利波特", "stops": [{"name": "侏罗纪大冒险", "type": "spot", "time": "16:30", "desc": "⭐5 必刷!真实恐龙", "cost": null, "load": 2}, {"name": "飞跃侏罗纪", "type": "spot", "time": "17:10", "desc": "⭐4 轻松版过山车", "cost": null, "load": 2}, {"name": "灯光摄影开拍", "type": "spot", "time": "18:00", "desc": "⭐4 有一场火", "cost": null, "load": 2}, {"name": "环球流行乐(演出)", "type": "photo", "time": "18:40", "desc": "跳舞的,还可以", "cost": null, "load": 1}, {"name": "禁忌之旅", "type": "spot", "time": "19:30", "desc": "⭐5 著名项目,沉浸感强", "cost": null, "load": 2}, {"name": "鹰马飞行", "type": "spot", "time": "20:10", "desc": "⭐4 很短没失重感的过山车", "cost": null, "load": 2}, {"name": "霍格沃茨城堡夜间魔法庆典", "type": "photo", "time": "20:40", "desc": "城堡灯光秀", "cost": null, "load": 1}, {"name": "小黄人园区二刷", "type": "spot", "time": "21:00", "desc": "心中必刷top:火种源/侏罗纪大冒险/禁忌之旅", "cost": null, "load": 2}], "dayLoad": 14, "loadLvl": "hard"}], "perDay": 300, "tier": {"name": "舒适均衡", "eat": "本地馆子+偶尔网红", "move": "地铁为主,偶尔打车", "stayNight": 240, "eatMul": 0.95}, "pack": [{"icon": "📄", "name": "证件&财务", "items": [{"t": "身份证/护照", "r": "", "checked": false}, {"t": "现金&银行卡", "r": "", "checked": false}, {"t": "常用支付App", "r": "", "checked": false}]}, {"icon": "👕", "name": "衣物", "items": [{"t": "换洗衣物 2 套", "r": "按天数+1", "checked": false}, {"t": "舒适运动鞋", "r": "暴走护脚", "checked": false}]}, {"icon": "💊", "name": "健康&防护", "items": [{"t": "防晒霜", "r": "", "checked": false}, {"t": "常用药&创可贴", "r": "", "checked": false}, {"t": "足贴/护膝", "r": "走得多护关节", "checked": false}]}, {"icon": "🔌", "name": "电子&杂项", "items": [{"t": "充电宝&数据线", "r": "", "checked": false}, {"t": "转换插头", "r": "境外插座不同", "checked": false}, {"t": "雨伞/雨衣", "r": "", "checked": false}, {"t": "环保购物袋", "r": "", "checked": false}]}], "budgetRows": [{"k": "🏨 住宿", "v": 240, "note": "240/晚 × 1 晚"}, {"k": "🍜 餐饮", "v": 124, "note": "124/天 × 1 天 · 本地馆子+偶尔网红"}, {"k": "🚕 市内交通", "v": 120, "note": "地铁为主,偶尔打车"}, {"k": "🎟️ 门票/体验", "v": 80, "note": "按行程实际点位累计"}, {"k": "🎁 购物/杂项", "v": 68, "note": "预留 12% 弹性"}], "savedAt": "2026-07-28T22:30:00+08:00"}, {"id": "seed_gugong", "source": "imported", "title": "北京故宫攻略", "city": "北京", "days": 1, "budgetSet": 0, "party": "family", "energy": "mid", "isFamily": true, "plan": [{"area": "购票 & 入园", "stops": [{"name": "门票(淡季40/旺季60)", "type": "spot", "time": "购票", "desc": "珍宝馆10·钟表馆10·午门免费,三个要抢票", "cost": 40, "load": 2}, {"name": "优惠:18岁以下免票,60岁以上/大学生半价", "type": "spot", "time": "购票", "desc": "", "cost": null, "load": 2}, {"name": "入馆时间", "type": "spot", "time": "8:30", "desc": "上午场8:30-11:00,下午场11:00-15:30,淡季16:30闭馆", "cost": null, "load": 2}, {"name": "带身份证+充电宝+纸巾+水+零食", "type": "spot", "time": "入园前", "desc": "", "cost": null, "load": 2}, {"name": "东华门路线进", "type": "spot", "time": "8:30", "desc": "地铁8号线金鱼胡同站C口右转沿东华门大街到午门", "cost": null, "load": 2}], "dayLoad": 10, "loadLvl": "hard"}, {"area": "中轴 & 三大殿(全程约2.5h)", "stops": [{"name": "午门", "type": "spot", "time": "9:00", "desc": "参观起点", "cost": null, "load": 2}, {"name": "武英殿", "type": "spot", "time": "9:20", "desc": "", "cost": null, "load": 2}, {"name": "太和殿", "type": "spot", "time": "9:50", "desc": "三大殿核心", "cost": null, "load": 2}, {"name": "保和殿", "type": "spot", "time": "10:20", "desc": "", "cost": null, "load": 2}, {"name": "慈宁宫花园·寿康宫·慈宁宫", "type": "spot", "time": "10:50", "desc": "", "cost": null, "load": 2}], "dayLoad": 10, "loadLvl": "hard"}, {"area": "西六宫 & 御花园", "stops": [{"name": "军机处·养心殿", "type": "spot", "time": "11:30", "desc": "", "cost": null, "load": 2}, {"name": "永寿宫·翊坤宫·储秀宫", "type": "spot", "time": "12:00", "desc": "", "cost": null, "load": 2}, {"name": "乾清宫·交泰殿·坤宁宫", "type": "spot", "time": "12:40", "desc": "", "cost": null, "load": 2}, {"name": "御花园", "type": "spot", "time": "13:10", "desc": "", "cost": null, "load": 2}, {"name": "神武门出", "type": "spot", "time": "13:40", "desc": "出来后交通管制,门口有大巴;可买到南锣鼓巷的地铁票10r", "cost": null, "load": 2}, {"name": "注意:禁带三脚架/反光板/>1.3米自拍杆;16:00开始赶人", "type": "spot", "time": "提醒", "desc": "淡季16:30闭馆注意时间", "cost": null, "load": 2}], "dayLoad": 12, "loadLvl": "hard"}], "perDay": 300, "tier": {"name": "舒适均衡", "eat": "本地馆子+偶尔网红", "move": "地铁为主,偶尔打车", "stayNight": 240, "eatMul": 0.95}, "pack": [{"icon": "📄", "name": "证件&财务", "items": [{"t": "身份证/护照", "r": "", "checked": false}, {"t": "现金&银行卡", "r": "", "checked": false}, {"t": "常用支付App", "r": "", "checked": false}]}, {"icon": "👕", "name": "衣物", "items": [{"t": "换洗衣物 2 套", "r": "按天数+1", "checked": false}, {"t": "舒适步行鞋", "r": "", "checked": false}, {"t": "老人小孩备用衣物", "r": "亲子出行", "checked": false}]}, {"icon": "💊", "name": "健康&防护", "items": [{"t": "防晒霜", "r": "", "checked": false}, {"t": "常用药&创可贴", "r": "", "checked": false}, {"t": "儿童/老人常备药", "r": "降低风险", "checked": false}, {"t": "足贴/护膝", "r": "走得多护关节", "checked": false}]}, {"icon": "🔌", "name": "电子&杂项", "items": [{"t": "充电宝&数据线", "r": "", "checked": false}, {"t": "转换插头", "r": "境外插座不同", "checked": false}, {"t": "雨伞/雨衣", "r": "", "checked": false}, {"t": "环保购物袋", "r": "", "checked": false}]}], "budgetRows": [{"k": "🏨 住宿", "v": 240, "note": "240/晚 × 1 晚"}, {"k": "🍜 餐饮", "v": 124, "note": "124/天 × 1 天 · 本地馆子+偶尔网红"}, {"k": "🚕 市内交通", "v": 120, "note": "地铁为主,偶尔打车"}, {"k": "🎟️ 门票/体验", "v": 40, "note": "按行程实际点位累计"}, {"k": "🎁 购物/杂项", "v": 63, "note": "预留 12% 弹性"}], "savedAt": "2026-07-28T22:30:00+08:00"}, {"id": "seed_changlong", "source": "imported", "title": "珠海长隆海洋王国攻略", "city": "珠海", "days": 1, "budgetSet": 0, "party": "family", "energy": "high", "isFamily": true, "plan": [{"area": "准备 & 场馆上午", "stops": [{"name": "下载官方APP「长隆旅游」", "type": "spot", "time": "入园前", "desc": "看排队时长", "cost": null, "load": 2}, {"name": "必带身份证+充电宝+水+纸;选带零食/伞/风扇/一次性雨衣", "type": "spot", "time": "入园前", "desc": "玩水项目要雨衣", "cost": null, "load": 2}, {"name": "海豚湾", "type": "spot", "time": "09:00", "desc": "⭐3 一般,就是几只海豚", "cost": null, "load": 2}, {"name": "白鲸馆", "type": "spot", "time": "09:40", "desc": "⭐4 远远看一下白鲸", "cost": null, "load": 2}, {"name": "鲸鲨馆", "type": "spot", "time": "10:20", "desc": "⭐5 特别好看!蜡笔小新同款机位,漂亮小鱼水母", "cost": null, "load": 2}, {"name": "雨林餐厅(午饭)", "type": "eat", "time": "11:40", "desc": "牛肉粉/小吃拼盘不错,12点后爆满建议早点", "cost": 90, "load": 1}], "dayLoad": 11, "loadLvl": "hard"}, {"area": "剧场 & 场馆下午", "stops": [{"name": "海豚剧场", "type": "spot", "time": "13:00", "desc": "⭐5 30min 很有意思,吃完饭刚好赶", "cost": null, "load": 2}, {"name": "白鲸剧场", "type": "spot", "time": "14:00", "desc": "⭐5 20min 会唱歌", "cost": null, "load": 2}, {"name": "北极熊馆", "type": "spot", "time": "14:40", "desc": "⭐3 只有一只北极熊,有狼/北极狐可看", "cost": null, "load": 2}, {"name": "企鹅馆", "type": "spot", "time": "15:10", "desc": "⭐5 好多企鹅超可爱,海底隧道看企鹅游泳", "cost": null, "load": 2}, {"name": "海狮剧场", "type": "spot", "time": "15:50", "desc": "⭐4 20min 有海象和海狮", "cost": null, "load": 2}], "dayLoad": 10, "loadLvl": "hard"}, {"area": "游乐 & 烟花", "stops": [{"name": "丛林过山车", "type": "spot", "time": "16:30", "desc": "⭐4 比较温和", "cost": null, "load": 2}, {"name": "激浪帆船", "type": "spot", "time": "17:00", "desc": "⭐4 旋转海盗船,会有点晕", "cost": null, "load": 2}, {"name": "超级激流", "type": "spot", "time": "17:40", "desc": "⭐4 好玩!记得带雨衣", "cost": null, "load": 2}, {"name": "冰山过山车", "type": "spot", "time": "18:20", "desc": "⭐5 必冲!人最多也无敌好玩,带雨衣", "cost": null, "load": 2}, {"name": "鹦鹉过山车", "type": "spot", "time": "19:00", "desc": "⭐5 太吓人天旋地转,慎玩", "cost": null, "load": 2}, {"name": "烟花秀", "type": "photo", "time": "20:00", "desc": "心中必刷top:海豚+白鲸剧场/鲸鲨+企鹅馆/冰山过山车/10分钟烟花秀", "cost": null, "load": 1}], "dayLoad": 11, "loadLvl": "hard"}], "perDay": 300, "tier": {"name": "舒适均衡", "eat": "本地馆子+偶尔网红", "move": "地铁为主,偶尔打车", "stayNight": 240, "eatMul": 0.95}, "pack": [{"icon": "📄", "name": "证件&财务", "items": [{"t": "身份证/护照", "r": "", "checked": false}, {"t": "现金&银行卡", "r": "", "checked": false}, {"t": "常用支付App", "r": "", "checked": false}]}, {"icon": "👕", "name": "衣物", "items": [{"t": "换洗衣物 2 套", "r": "按天数+1", "checked": false}, {"t": "舒适运动鞋", "r": "暴走护脚", "checked": false}, {"t": "老人小孩备用衣物", "r": "亲子出行", "checked": false}]}, {"icon": "💊", "name": "健康&防护", "items": [{"t": "防晒霜", "r": "", "checked": false}, {"t": "常用药&创可贴", "r": "", "checked": false}, {"t": "儿童/老人常备药", "r": "降低风险", "checked": false}, {"t": "足贴/护膝", "r": "走得多护关节", "checked": false}]}, {"icon": "🔌", "name": "电子&杂项", "items": [{"t": "充电宝&数据线", "r": "", "checked": false}, {"t": "转换插头", "r": "境外插座不同", "checked": false}, {"t": "雨伞/雨衣", "r": "", "checked": false}, {"t": "环保购物袋", "r": "", "checked": false}]}], "budgetRows": [{"k": "🏨 住宿", "v": 240, "note": "240/晚 × 1 晚"}, {"k": "🍜 餐饮", "v": 124, "note": "124/天 × 1 天 · 本地馆子+偶尔网红"}, {"k": "🚕 市内交通", "v": 120, "note": "地铁为主,偶尔打车"}, {"k": "🎟️ 门票/体验", "v": 90, "note": "按行程实际点位累计"}, {"k": "🎁 购物/杂项", "v": 69, "note": "预留 12% 弹性"}], "savedAt": "2026-07-28T22:30:00+08:00"}];
+renderStash();
+// 启动时从后端水合攻略库(失败自动回退本地缓存+种子),完成后渲染。
+hydrateLib().then(function(){renderLib();fillCloneSel();});
+</script>
+</body>
+</html>
