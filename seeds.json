@@ -1,0 +1,906 @@
+[
+ {
+  "id": "seed_universal",
+  "source": "imported",
+  "title": "北京环球影城攻略",
+  "city": "北京",
+  "days": 1,
+  "budgetSet": 0,
+  "party": "friends",
+  "energy": "high",
+  "isFamily": false,
+  "plan": [
+   {
+    "area": "必备 & 入园",
+    "stops": [
+     {
+      "name": "下载官方APP「北京环球度假区」",
+      "type": "spot",
+      "time": "入园前",
+      "desc": "看排队时长必备",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "带身份证+充电宝+水+少量零食",
+      "type": "spot",
+      "time": "入园前",
+      "desc": "园区有免费接水点,矿泉水15一杯",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "小黄人园区(先冲)",
+      "type": "spot",
+      "time": "09:00",
+      "desc": "错峰路线第一站",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "萌转过山车",
+      "type": "spot",
+      "time": "09:20",
+      "desc": "⭐4 推荐,很快不刺激",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "小黄人闹翻天",
+      "type": "spot",
+      "time": "10:00",
+      "desc": "⭐4 推荐,沉浸感还行",
+      "cost": null,
+      "load": 2
+     }
+    ],
+    "dayLoad": 10,
+    "loadLvl": "hard"
+   },
+   {
+    "area": "功夫熊猫 & 变形金刚",
+    "stops": [
+     {
+      "name": "灯影传奇",
+      "type": "spot",
+      "time": "11:00",
+      "desc": "⭐4 推荐,转圈圈",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "炫转武侠",
+      "type": "spot",
+      "time": "11:40",
+      "desc": "⭐4 推荐,旋转木马可以玩",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "漂流者小馆(午饭)",
+      "type": "eat",
+      "time": "12:30",
+      "desc": "三只扫帚排队太久改这家,汉堡一般",
+      "cost": 80,
+      "load": 1
+     },
+     {
+      "name": "火种源争夺战",
+      "type": "spot",
+      "time": "14:00",
+      "desc": "⭐5 必刷!戴护镜很真实",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "霸天虎过山车",
+      "type": "spot",
+      "time": "15:00",
+      "desc": "⭐4 很刺激时间短,慎玩",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "大黄蜂回旋机",
+      "type": "spot",
+      "time": "15:40",
+      "desc": "⭐4 简单轻松转圈圈",
+      "cost": null,
+      "load": 2
+     }
+    ],
+    "dayLoad": 11,
+    "loadLvl": "hard"
+   },
+   {
+    "area": "侏罗纪 · 好莱坞 · 哈利波特",
+    "stops": [
+     {
+      "name": "侏罗纪大冒险",
+      "type": "spot",
+      "time": "16:30",
+      "desc": "⭐5 必刷!真实恐龙",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "飞跃侏罗纪",
+      "type": "spot",
+      "time": "17:10",
+      "desc": "⭐4 轻松版过山车",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "灯光摄影开拍",
+      "type": "spot",
+      "time": "18:00",
+      "desc": "⭐4 有一场火",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "环球流行乐(演出)",
+      "type": "photo",
+      "time": "18:40",
+      "desc": "跳舞的,还可以",
+      "cost": null,
+      "load": 1
+     },
+     {
+      "name": "禁忌之旅",
+      "type": "spot",
+      "time": "19:30",
+      "desc": "⭐5 著名项目,沉浸感强",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "鹰马飞行",
+      "type": "spot",
+      "time": "20:10",
+      "desc": "⭐4 很短没失重感的过山车",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "霍格沃茨城堡夜间魔法庆典",
+      "type": "photo",
+      "time": "20:40",
+      "desc": "城堡灯光秀",
+      "cost": null,
+      "load": 1
+     },
+     {
+      "name": "小黄人园区二刷",
+      "type": "spot",
+      "time": "21:00",
+      "desc": "心中必刷top:火种源/侏罗纪大冒险/禁忌之旅",
+      "cost": null,
+      "load": 2
+     }
+    ],
+    "dayLoad": 14,
+    "loadLvl": "hard"
+   }
+  ],
+  "perDay": 300,
+  "tier": {
+   "name": "舒适均衡",
+   "eat": "本地馆子+偶尔网红",
+   "move": "地铁为主,偶尔打车",
+   "stayNight": 240,
+   "eatMul": 0.95
+  },
+  "pack": [
+   {
+    "icon": "📄",
+    "name": "证件&财务",
+    "items": [
+     {
+      "t": "身份证/护照",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "现金&银行卡",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "常用支付App",
+      "r": "",
+      "checked": false
+     }
+    ]
+   },
+   {
+    "icon": "👕",
+    "name": "衣物",
+    "items": [
+     {
+      "t": "换洗衣物 2 套",
+      "r": "按天数+1",
+      "checked": false
+     },
+     {
+      "t": "舒适运动鞋",
+      "r": "暴走护脚",
+      "checked": false
+     }
+    ]
+   },
+   {
+    "icon": "💊",
+    "name": "健康&防护",
+    "items": [
+     {
+      "t": "防晒霜",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "常用药&创可贴",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "足贴/护膝",
+      "r": "走得多护关节",
+      "checked": false
+     }
+    ]
+   },
+   {
+    "icon": "🔌",
+    "name": "电子&杂项",
+    "items": [
+     {
+      "t": "充电宝&数据线",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "转换插头",
+      "r": "境外插座不同",
+      "checked": false
+     },
+     {
+      "t": "雨伞/雨衣",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "环保购物袋",
+      "r": "",
+      "checked": false
+     }
+    ]
+   }
+  ],
+  "budgetRows": [
+   {
+    "k": "🏨 住宿",
+    "v": 240,
+    "note": "240/晚 × 1 晚"
+   },
+   {
+    "k": "🍜 餐饮",
+    "v": 124,
+    "note": "124/天 × 1 天 · 本地馆子+偶尔网红"
+   },
+   {
+    "k": "🚕 市内交通",
+    "v": 120,
+    "note": "地铁为主,偶尔打车"
+   },
+   {
+    "k": "🎟️ 门票/体验",
+    "v": 80,
+    "note": "按行程实际点位累计"
+   },
+   {
+    "k": "🎁 购物/杂项",
+    "v": 68,
+    "note": "预留 12% 弹性"
+   }
+  ],
+  "savedAt": "2026-07-28T22:30:00+08:00"
+ },
+ {
+  "id": "seed_gugong",
+  "source": "imported",
+  "title": "北京故宫攻略",
+  "city": "北京",
+  "days": 1,
+  "budgetSet": 0,
+  "party": "family",
+  "energy": "mid",
+  "isFamily": true,
+  "plan": [
+   {
+    "area": "购票 & 入园",
+    "stops": [
+     {
+      "name": "门票(淡季40/旺季60)",
+      "type": "spot",
+      "time": "购票",
+      "desc": "珍宝馆10·钟表馆10·午门免费,三个要抢票",
+      "cost": 40,
+      "load": 2
+     },
+     {
+      "name": "优惠:18岁以下免票,60岁以上/大学生半价",
+      "type": "spot",
+      "time": "购票",
+      "desc": "",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "入馆时间",
+      "type": "spot",
+      "time": "8:30",
+      "desc": "上午场8:30-11:00,下午场11:00-15:30,淡季16:30闭馆",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "带身份证+充电宝+纸巾+水+零食",
+      "type": "spot",
+      "time": "入园前",
+      "desc": "",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "东华门路线进",
+      "type": "spot",
+      "time": "8:30",
+      "desc": "地铁8号线金鱼胡同站C口右转沿东华门大街到午门",
+      "cost": null,
+      "load": 2
+     }
+    ],
+    "dayLoad": 10,
+    "loadLvl": "hard"
+   },
+   {
+    "area": "中轴 & 三大殿(全程约2.5h)",
+    "stops": [
+     {
+      "name": "午门",
+      "type": "spot",
+      "time": "9:00",
+      "desc": "参观起点",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "武英殿",
+      "type": "spot",
+      "time": "9:20",
+      "desc": "",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "太和殿",
+      "type": "spot",
+      "time": "9:50",
+      "desc": "三大殿核心",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "保和殿",
+      "type": "spot",
+      "time": "10:20",
+      "desc": "",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "慈宁宫花园·寿康宫·慈宁宫",
+      "type": "spot",
+      "time": "10:50",
+      "desc": "",
+      "cost": null,
+      "load": 2
+     }
+    ],
+    "dayLoad": 10,
+    "loadLvl": "hard"
+   },
+   {
+    "area": "西六宫 & 御花园",
+    "stops": [
+     {
+      "name": "军机处·养心殿",
+      "type": "spot",
+      "time": "11:30",
+      "desc": "",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "永寿宫·翊坤宫·储秀宫",
+      "type": "spot",
+      "time": "12:00",
+      "desc": "",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "乾清宫·交泰殿·坤宁宫",
+      "type": "spot",
+      "time": "12:40",
+      "desc": "",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "御花园",
+      "type": "spot",
+      "time": "13:10",
+      "desc": "",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "神武门出",
+      "type": "spot",
+      "time": "13:40",
+      "desc": "出来后交通管制,门口有大巴;可买到南锣鼓巷的地铁票10r",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "注意:禁带三脚架/反光板/>1.3米自拍杆;16:00开始赶人",
+      "type": "spot",
+      "time": "提醒",
+      "desc": "淡季16:30闭馆注意时间",
+      "cost": null,
+      "load": 2
+     }
+    ],
+    "dayLoad": 12,
+    "loadLvl": "hard"
+   }
+  ],
+  "perDay": 300,
+  "tier": {
+   "name": "舒适均衡",
+   "eat": "本地馆子+偶尔网红",
+   "move": "地铁为主,偶尔打车",
+   "stayNight": 240,
+   "eatMul": 0.95
+  },
+  "pack": [
+   {
+    "icon": "📄",
+    "name": "证件&财务",
+    "items": [
+     {
+      "t": "身份证/护照",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "现金&银行卡",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "常用支付App",
+      "r": "",
+      "checked": false
+     }
+    ]
+   },
+   {
+    "icon": "👕",
+    "name": "衣物",
+    "items": [
+     {
+      "t": "换洗衣物 2 套",
+      "r": "按天数+1",
+      "checked": false
+     },
+     {
+      "t": "舒适步行鞋",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "老人小孩备用衣物",
+      "r": "亲子出行",
+      "checked": false
+     }
+    ]
+   },
+   {
+    "icon": "💊",
+    "name": "健康&防护",
+    "items": [
+     {
+      "t": "防晒霜",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "常用药&创可贴",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "儿童/老人常备药",
+      "r": "降低风险",
+      "checked": false
+     },
+     {
+      "t": "足贴/护膝",
+      "r": "走得多护关节",
+      "checked": false
+     }
+    ]
+   },
+   {
+    "icon": "🔌",
+    "name": "电子&杂项",
+    "items": [
+     {
+      "t": "充电宝&数据线",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "转换插头",
+      "r": "境外插座不同",
+      "checked": false
+     },
+     {
+      "t": "雨伞/雨衣",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "环保购物袋",
+      "r": "",
+      "checked": false
+     }
+    ]
+   }
+  ],
+  "budgetRows": [
+   {
+    "k": "🏨 住宿",
+    "v": 240,
+    "note": "240/晚 × 1 晚"
+   },
+   {
+    "k": "🍜 餐饮",
+    "v": 124,
+    "note": "124/天 × 1 天 · 本地馆子+偶尔网红"
+   },
+   {
+    "k": "🚕 市内交通",
+    "v": 120,
+    "note": "地铁为主,偶尔打车"
+   },
+   {
+    "k": "🎟️ 门票/体验",
+    "v": 40,
+    "note": "按行程实际点位累计"
+   },
+   {
+    "k": "🎁 购物/杂项",
+    "v": 63,
+    "note": "预留 12% 弹性"
+   }
+  ],
+  "savedAt": "2026-07-28T22:30:00+08:00"
+ },
+ {
+  "id": "seed_changlong",
+  "source": "imported",
+  "title": "珠海长隆海洋王国攻略",
+  "city": "珠海",
+  "days": 1,
+  "budgetSet": 0,
+  "party": "family",
+  "energy": "high",
+  "isFamily": true,
+  "plan": [
+   {
+    "area": "准备 & 场馆上午",
+    "stops": [
+     {
+      "name": "下载官方APP「长隆旅游」",
+      "type": "spot",
+      "time": "入园前",
+      "desc": "看排队时长",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "必带身份证+充电宝+水+纸;选带零食/伞/风扇/一次性雨衣",
+      "type": "spot",
+      "time": "入园前",
+      "desc": "玩水项目要雨衣",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "海豚湾",
+      "type": "spot",
+      "time": "09:00",
+      "desc": "⭐3 一般,就是几只海豚",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "白鲸馆",
+      "type": "spot",
+      "time": "09:40",
+      "desc": "⭐4 远远看一下白鲸",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "鲸鲨馆",
+      "type": "spot",
+      "time": "10:20",
+      "desc": "⭐5 特别好看!蜡笔小新同款机位,漂亮小鱼水母",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "雨林餐厅(午饭)",
+      "type": "eat",
+      "time": "11:40",
+      "desc": "牛肉粉/小吃拼盘不错,12点后爆满建议早点",
+      "cost": 90,
+      "load": 1
+     }
+    ],
+    "dayLoad": 11,
+    "loadLvl": "hard"
+   },
+   {
+    "area": "剧场 & 场馆下午",
+    "stops": [
+     {
+      "name": "海豚剧场",
+      "type": "spot",
+      "time": "13:00",
+      "desc": "⭐5 30min 很有意思,吃完饭刚好赶",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "白鲸剧场",
+      "type": "spot",
+      "time": "14:00",
+      "desc": "⭐5 20min 会唱歌",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "北极熊馆",
+      "type": "spot",
+      "time": "14:40",
+      "desc": "⭐3 只有一只北极熊,有狼/北极狐可看",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "企鹅馆",
+      "type": "spot",
+      "time": "15:10",
+      "desc": "⭐5 好多企鹅超可爱,海底隧道看企鹅游泳",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "海狮剧场",
+      "type": "spot",
+      "time": "15:50",
+      "desc": "⭐4 20min 有海象和海狮",
+      "cost": null,
+      "load": 2
+     }
+    ],
+    "dayLoad": 10,
+    "loadLvl": "hard"
+   },
+   {
+    "area": "游乐 & 烟花",
+    "stops": [
+     {
+      "name": "丛林过山车",
+      "type": "spot",
+      "time": "16:30",
+      "desc": "⭐4 比较温和",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "激浪帆船",
+      "type": "spot",
+      "time": "17:00",
+      "desc": "⭐4 旋转海盗船,会有点晕",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "超级激流",
+      "type": "spot",
+      "time": "17:40",
+      "desc": "⭐4 好玩!记得带雨衣",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "冰山过山车",
+      "type": "spot",
+      "time": "18:20",
+      "desc": "⭐5 必冲!人最多也无敌好玩,带雨衣",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "鹦鹉过山车",
+      "type": "spot",
+      "time": "19:00",
+      "desc": "⭐5 太吓人天旋地转,慎玩",
+      "cost": null,
+      "load": 2
+     },
+     {
+      "name": "烟花秀",
+      "type": "photo",
+      "time": "20:00",
+      "desc": "心中必刷top:海豚+白鲸剧场/鲸鲨+企鹅馆/冰山过山车/10分钟烟花秀",
+      "cost": null,
+      "load": 1
+     }
+    ],
+    "dayLoad": 11,
+    "loadLvl": "hard"
+   }
+  ],
+  "perDay": 300,
+  "tier": {
+   "name": "舒适均衡",
+   "eat": "本地馆子+偶尔网红",
+   "move": "地铁为主,偶尔打车",
+   "stayNight": 240,
+   "eatMul": 0.95
+  },
+  "pack": [
+   {
+    "icon": "📄",
+    "name": "证件&财务",
+    "items": [
+     {
+      "t": "身份证/护照",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "现金&银行卡",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "常用支付App",
+      "r": "",
+      "checked": false
+     }
+    ]
+   },
+   {
+    "icon": "👕",
+    "name": "衣物",
+    "items": [
+     {
+      "t": "换洗衣物 2 套",
+      "r": "按天数+1",
+      "checked": false
+     },
+     {
+      "t": "舒适运动鞋",
+      "r": "暴走护脚",
+      "checked": false
+     },
+     {
+      "t": "老人小孩备用衣物",
+      "r": "亲子出行",
+      "checked": false
+     }
+    ]
+   },
+   {
+    "icon": "💊",
+    "name": "健康&防护",
+    "items": [
+     {
+      "t": "防晒霜",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "常用药&创可贴",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "儿童/老人常备药",
+      "r": "降低风险",
+      "checked": false
+     },
+     {
+      "t": "足贴/护膝",
+      "r": "走得多护关节",
+      "checked": false
+     }
+    ]
+   },
+   {
+    "icon": "🔌",
+    "name": "电子&杂项",
+    "items": [
+     {
+      "t": "充电宝&数据线",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "转换插头",
+      "r": "境外插座不同",
+      "checked": false
+     },
+     {
+      "t": "雨伞/雨衣",
+      "r": "",
+      "checked": false
+     },
+     {
+      "t": "环保购物袋",
+      "r": "",
+      "checked": false
+     }
+    ]
+   }
+  ],
+  "budgetRows": [
+   {
+    "k": "🏨 住宿",
+    "v": 240,
+    "note": "240/晚 × 1 晚"
+   },
+   {
+    "k": "🍜 餐饮",
+    "v": 124,
+    "note": "124/天 × 1 天 · 本地馆子+偶尔网红"
+   },
+   {
+    "k": "🚕 市内交通",
+    "v": 120,
+    "note": "地铁为主,偶尔打车"
+   },
+   {
+    "k": "🎟️ 门票/体验",
+    "v": 90,
+    "note": "按行程实际点位累计"
+   },
+   {
+    "k": "🎁 购物/杂项",
+    "v": 69,
+    "note": "预留 12% 弹性"
+   }
+  ],
+  "savedAt": "2026-07-28T22:30:00+08:00"
+ }
+]
