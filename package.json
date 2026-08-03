@@ -1,0 +1,15 @@
+{
+  "name": "travel",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "wrangler deploy --dry-run",
+    "db:migrate": "wrangler d1 migrations apply travel-db --remote"
+  },
+  "devDependencies": {
+    "wrangler": "^4.92.0"
+  }
+}
